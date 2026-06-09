@@ -315,7 +315,7 @@ const CITY_TO_IATA={
 const MONTHS_AR={JAN:'يناير',FEB:'فبراير',MAR:'مارس',APR:'أبريل',MAY:'مايو',JUN:'يونيو',JUL:'يوليو',AUG:'أغسطس',SEP:'سبتمبر',OCT:'أكتوبر',NOV:'نوفمبر',DEC:'ديسمبر'};
 const MONTHS_EN_MAP={'jan':'JAN','feb':'FEB','mar':'MAR','apr':'APR','may':'MAY','jun':'JUN','jul':'JUL','aug':'AUG','sep':'SEP','oct':'OCT','nov':'NOV','dec':'DEC','january':'JAN','february':'FEB','march':'MAR','april':'APR','june':'JUN','july':'JUL','august':'AUG','september':'SEP','october':'OCT','november':'NOV','december':'DEC'};
 const MONTHS_AR_MAP={'يناير':'JAN','فبراير':'FEB','مارس':'MAR','أبريل':'APR','مايو':'MAY','يونيو':'JUN','يوليو':'JUL','أغسطس':'AUG','سبتمبر':'SEP','أكتوبر':'OCT','نوفمبر':'NOV','ديسمبر':'DEC'};
-const FMT_EXAMPLES=[{label:'Amadeus GDS',text:'SV373 V 15JUN 1 JEDCMN HK1 0825 1305\nXY425 K 20JUN 5 RUHJED DK2 0610 0720 20JUN E'},{label:'Flyadeal',text:'Departure Flight\n14 May 2026\n05:10\nRiyadh(RUH)Terminal 3\nF3 31\n1H 50M\nAirbus A320\n07:00\nGizan(GIZ)'},{label:'flynas',text:'Departing flight\nXY 208\nAirbus 320\nDubai\nDXB\n19:45\n1 hr 55 min\nNon-stop\nRiyadh\nRUH\n20:40\nTue, 9 Jun 2026'},{label:'Air Arabia',text:'Sharjah → Dubai\nG9 214 | non-stop\nDep: 14 Apr 2026 09:15 SHJ\nArr: 14 Apr 2026 10:15 DXB'},{label:'صيغة مختصرة',text:'G9 598 | CAI/SHJ | 20 MAY 2026 | 22:25 → 02:50'},{label:'GDS جدول',text:'BEY/SHJ/RUH\tG9388D\nG9151\tG9\nG9\tTue 9Jun26 13:00\nWed 10Jun26 06:50\tTue 9Jun26 17:55\nWed 10Jun26 08:20'},{label:'DEP/ARR',text:'BEY/SHJ\nG9388D\nG9\nTue 09/06/2026\nDEP\n13:00\nARR\n17:55\n\nSHJ/RUH\nG9151\nG9\nWed 10/06/2026\nDEP\n06:50\nARR\n08:20'},{label:'نص عربي منظم',text:'الرحلة الأولى (الرياض ➔ الشارقة):\n* رقم الرحلة: G9 155\n* التاريخ: الأربعاء 17 يونيو 2026\n* الإقلاع من الرياض (RUH): 05:00 مساءً\n* الوصول إلى الشارقة (SHJ): 08:05 مساءً\nفترة الترانزيت:\n* المدة: ساعة و35 دقيقة في مطار الشارقة الدولي.\nالرحلة الثانية (الشارقة ➔ دكا):\n* رقم الرحلة: G9 518\n* التاريخ: الأربعاء 17 يونيو 2026\n* الإقلاع من الشارقة (SHJ): 10:40 مساءً\n* الوصول إلى دكا (DAC): 05:20 صباحاً'},{label:'نص عربي',text:'من الرياض (RUH) صالة 3 إلى جدة (JED)\nالإقلاع: السبت 25 أبريل 2026 الساعة 05:55\nالوصول: 07:45\nطيران أديل F3 103'},{label:'ذهاب وعودة',text:'Departure Flight\n02 May 2026\n08:00\nRiyadh (RUH) T3\nF3 101\n09:50\nJeddah (JED) T1\n\nReturn Flight\n09 May 2026\n14:00\nJeddah (JED) T1\nF3 104\n15:50\nRiyadh (RUH) T3'},{label:'GDS متعدد',text:'Wed 13May26\n10:20 - 13:10\nKUL - DXB\nEK 345\nL\n6h 50m\nWed 13May26\n20:50 - 21:20\nDXB - DMM\nEK 821\nL\n1h 30m'}];
+const FMT_EXAMPLES=[{label:'GDS كلاسيك',text:'SV1856 Q 19JUN 5 JEDEAM HK1 2105 2245 19JUN E'},{label:'Amadeus GDS',text:'SV373 V 15JUN 1 JEDCMN HK1 0825 1305\nXY425 K 20JUN 5 RUHJED DK2 0610 0720 20JUN E'},{label:'Flyadeal توقف',text:'16:55\nDammamDMM\nF3 184\n1H 5M\nAirbus A320\n18:00\nTerminal3\nRiyadhRUH\nSAR  429.00\nfly+\nTransit in Riyadh (RUH) For4h 30m\n25 Jun 2026\n22:30\nTerminal3\nRiyadhRUH\nF3 157\n1H 45M\nAirbus A320\n+1\n00:15\nTerminal1\nJeddahJED'},{label:'flynas متعدد',text:'Departing flight\nXY 59\nAirbus 320\nFlight details\nRiyadh\nRUH\n19:00\n1 hr 50 min\nJeddah\nJED\n20:50\nTue, 23 Jun 2026\nFlight Status: Confirmed\nXY 435\nAirbus 320\nFlight details\nJeddah\nJED\n23:05\n1 hr 20 min\nAbha\nAHB\n00:25\nTue, 23 Jun 2026\nFlight Status: Confirmed'},{label:'Air Arabia',text:'Sharjah → Dubai\nG9 214 | non-stop\nDep: 14 Apr 2026 09:15 SHJ\nArr: 14 Apr 2026 10:15 DXB'},{label:'صيغة مختصرة',text:'G9 598 | CAI/SHJ | 20 MAY 2026 | 22:25 → 02:50'},{label:'GDS جدول',text:'BEY/SHJ/RUH\tG9388D\nG9151\tG9\nG9\tTue 9Jun26 13:00\nWed 10Jun26 06:50\tTue 9Jun26 17:55\nWed 10Jun26 08:20'},{label:'DEP/ARR',text:'BEY/SHJ\nG9388D\nG9\nTue 09/06/2026\nDEP\n13:00\nARR\n17:55\n\nSHJ/RUH\nG9151\nG9\nWed 10/06/2026\nDEP\n06:50\nARR\n08:20'},{label:'نص عربي منظم',text:'الرحلة الأولى (الرياض ➔ الشارقة):\n* رقم الرحلة: G9 155\n* التاريخ: الأربعاء 17 يونيو 2026\n* الإقلاع من الرياض (RUH): 05:00 مساءً\n* الوصول إلى الشارقة (SHJ): 08:05 مساءً\nفترة الترانزيت:\n* المدة: ساعة و35 دقيقة في مطار الشارقة الدولي.\nالرحلة الثانية (الشارقة ➔ دكا):\n* رقم الرحلة: G9 518\n* التاريخ: الأربعاء 17 يونيو 2026\n* الإقلاع من الشارقة (SHJ): 10:40 مساءً\n* الوصول إلى دكا (DAC): 05:20 صباحاً'},{label:'نص عربي',text:'من الرياض (RUH) صالة 3 إلى جدة (JED)\nالإقلاع: السبت 25 أبريل 2026 الساعة 05:55\nالوصول: 07:45\nطيران أديل F3 103'},{label:'ذهاب وعودة',text:'Departure Flight\n02 May 2026\n08:00\nRiyadh (RUH) T3\nF3 101\n09:50\nJeddah (JED) T1\n\nReturn Flight\n09 May 2026\n14:00\nJeddah (JED) T1\nF3 104\n15:50\nRiyadh (RUH) T3'},{label:'GDS متعدد',text:'Wed 13May26\n10:20 - 13:10\nKUL - DXB\nEK 345\nL\n6h 50m\nWed 13May26\n20:50 - 21:20\nDXB - DMM\nEK 821\nL\n1h 30m'}];
 
 // ══ VALIDATION FIELD CONFIG ══
 const VFIELDS={
@@ -338,7 +338,15 @@ function buildFmtTabs(){const tabs=document.getElementById('fmtTabs'),examples=d
 
 // ══ PARSERS ══
 function cityNameToCode(text){const lower=text.toLowerCase().trim(),sorted=Object.entries(CITY_TO_IATA).sort((a,b)=>b[0].length-a[0].length);for(const[city,code]of sorted){if(lower.includes(city))return code;}return null;}
-function normalizeText(raw){let t=raw;t=t.replace(/\bflight\s+details?\b/gi,' ');t=t.replace(/\bnon-?\s*stop\b/gi,' ');t=t.replace(/\b(?:airbus|boeing)\s*[\w\-]+/gi,' ');t=t.replace(/\b(?:economy|business|first|premium)\s*\([^)]*\)/gi,' ');t=t.replace(/\bflight\s+([A-Z0-9]{2}\s*\d{2,4})/gi,'$1');t=t.replace(/(\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4})\s*,?\s*(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gi,'$1');t=t.replace(/^\s*\d{1,2}\s*h(?:r?s?|ours?)?\s*\d{0,2}\s*m(?:in(?:utes?)?)?\s*$/gim,' ');t=t.replace(/\b\d+\s*stop\b/gi,' ');t=t.replace(/\bconnecting\b/gi,' ');t=t.replace(/\bdeparture\s+from\b/gi,'Departure Flight from');t=t.replace(/\breturn\s+from\b/gi,'Return Flight from');t=t.replace(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:International\s+)?Airport\s*,?\s*/g,' ');t=t.replace(/([a-z])([A-Z]{3})\b/g,(m,p,c)=>AIRPORTS[c]?p+' '+c:m);t=t.replace(/([a-zA-Z])\(([A-Z]{3})\)/g,(m,p,c)=>AIRPORTS[c]?p+' ('+c+')':m);t=t.replace(/([a-z])(To|to|From|from)([A-Z])/g,'$1 $2 $3');t=t.replace(/([a-zA-Z])(\d+h)/g,'$1 $2');t=t.replace(/\b(Terminal)(\d)/gi,'$1 $2');t=t.replace(/\|/g,' | ');  // FIX: Fused airline+flight like G9155 → G9 155, SV373 → SV 373
+function normalizeText(raw){let t=raw;t=t.replace(/\bflight\s+details?\b/gi,' ');t=t.replace(/\bnon-?\s*stop\b/gi,' ');t=t.replace(/\b(?:airbus|boeing)\s*[\w\-]+/gi,' ');t=t.replace(/\b(?:economy|business|first|premium)\s*\([^)]*\)/gi,' ');t=t.replace(/\bflight\s+([A-Z0-9]{2}\s*\d{2,4})/gi,'$1');t=t.replace(/(\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4})\s*,?\s*(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/gi,'$1');t=t.replace(/^\s*\d{1,2}\s*h(?:r?s?|ours?)?\s*\d{0,2}\s*m(?:in(?:utes?)?)?\s*$/gim,' ');t=t.replace(/\b\d+\s*stop\b/gi,' ');t=t.replace(/\bconnecting\b/gi,' ');t=t.replace(/\bdeparture\s+from\b/gi,'Departure Flight from');t=t.replace(/\breturn\s+from\b/gi,'Return Flight from');t=t.replace(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:International\s+)?Airport\s*,?\s*/g,' ');t=t.replace(/([a-z])([A-Z]{3})\b/g,(m,p,c)=>AIRPORTS[c]?p+' '+c:m);t=t.replace(/([a-zA-Z])\(([A-Z]{3})\)/g,(m,p,c)=>AIRPORTS[c]?p+' ('+c+')':m);t=t.replace(/([a-z])(To|to|From|from)([A-Z])/g,'$1 $2 $3');t=t.replace(/([a-zA-Z])(\d+h)/g,'$1 $2');t=t.replace(/\b(Terminal)(\d)/gi,'$1 $2');t=t.replace(/\|/g,' | ');
+  // FIX: Fused CityName+IATA like "DammamDMM" → "Dammam DMM", "RiyadhRUH" → "Riyadh RUH"
+  t = t.replace(/([A-Za-z]{3,})([A-Z]{3})\b/g, (match, city, iata) => {
+    if (AIRPORTS[iata]) return city + ' ' + iata;
+    return match;
+  });
+  // FIX: Fused CitytoCity like "DammamtoJeddah" → "Dammam to Jeddah"
+  t = t.replace(/\b([A-Z][a-z]{2,})(to)([A-Z][a-z]{2,})/g, '$1 $2 $3');
+  // FIX: Fused airline+flight like G9155 → G9 155, SV373 → SV 373
   t = t.replace(/\b([A-Z][A-Z0-9])(\d{2,4})\b/g, (match, code, num) => {
     // Only split if the 2-char part looks like an airline (letter+letter or letter+digit)
     return code + ' ' + num;
@@ -420,186 +428,358 @@ function computeTotalDuration(segs){if(!segs.length)return{en:'',ar:''};const fi
 
 
 // ══════════════════════════════════════════════════════════════
-// FORMAT DETECTORS — run before smartExtract
+// ██████████████  AIRLINE PARSERS REGISTRY  ████████████████████
+//
+//  كل شركة طيران لها دالة مستقلة تعيد:
+//    Array<RawSeg>  — نجاح
+//    null           — هذا التنسيق ليس لها
+//
+//  كل RawSeg يحتوي على:
+//    { fromCode, toCode, airlineCode, flightNum,
+//      dateRaw, time, arrTime, terminal,
+//      stopover, layoverEn, layoverAr }
+//
+//  إضافة شركة جديدة = نسخ template في الأسفل وتعديله
 // ══════════════════════════════════════════════════════════════
 
-// ── Format A: GDS Tab-table (BEY/RUH\tG9388D ...)
-// Returns array of seg objects or null if not this format
-function parseFormatA(raw){
-  // Normalize: multiple spaces (3+) OR tabs → single tab (GDS tables use either)
-  const normalized = raw.replace(/[ \t]{3,}/g, '\t').replace(/\t[ \t]*/g, '\t');
-  const lines = normalized.trim().split('\n').map(l => l.split('\t').map(s => s.trim()));
-  // Signature: line[0] col[0] = "AAA/BBB" or "AAA/BBB/CCC"
-  if(!lines[0] || !lines[0][0]) return null;
-  const routeM = lines[0][0].match(/^([A-Z]{3})(?:\/[A-Z]{3})*\/([A-Z]{3})(?:D)?$/);
-  if(!routeM) return null;
-  // Must have tabs in at least 2 rows
-  const tabRows = lines.filter(r => r.length > 1);
-  if(tabRows.length < 2) return null;
+// ─────────────────────────────────────────────────────────────
+// SHARED HELPERS  (مشتركة بين كل الـ parsers)
+// ─────────────────────────────────────────────────────────────
 
-  // Extract airports from route
-  const routeParts = lines[0][0].replace(/D$/,'').split('/');
-  const airports = routeParts; // e.g. ['BEY','SHJ','RUH'] or ['BEY','RUH']
+/** نظّف سطور النص وأزل الضجيج المشترك */
+function sharedCleanLines(text, extraIgnore) {
+  const BASE_IGNORE = /^(?:Airbus|Boeing|Embraer|ATR|Flight\s+details?|Flight\s+Status[:\s]|SAR\s|KWD\s|EGP\s|USD\s|AED\s|fly\+?$|Confirmed?$|\+1$|\+2$|Economy|Business|First\s+Class|\d+\s*h(?:r?s?|ours?)\s*\d*\s*m(?:in(?:utes?)?)?|\d+\s*hr\s*\d*\s*min|Non-?stop|Direct|Connecting|flight\s+land)/i;
+  return text.split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0 && !BASE_IGNORE.test(l) && !(extraIgnore && extraIgnore.test(l)));
+}
 
-  // Extract flight numbers from col 0/1 (they appear in left or right of tabs)
-  const allTokens = lines.flatMap(r => r);
-  const flightRe = /^([A-Z][A-Z0-9])[\s-]?(\d{2,4}[A-Z]?)$/;
-  const flights = allTokens.filter(t => flightRe.test(t));
-  const airlines = allTokens.filter(t => /^[A-Z]{2}$/.test(t) && !['AM','PM'].includes(t));
-  // Extract date+time tokens: "Tue 9Jun26 13:00" or "Wed 10Jun26 06:50"
-  const dtRe = /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+(\d{1,2})(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(\d{2,4})\s+(\d{2}:\d{2})\b/gi;
-  const dts = [...raw.matchAll(dtRe)].map(m => ({
-    day: m[1], date: `${m[2]}${m[3].toUpperCase()}${m[4].length===2?'20'+m[4]:m[4]}`, time: m[5]
-  }));
+/** استخرج أوقات HH:MM الصالحة من قائمة سطور */
+function sharedExtractTimes(lines) {
+  return lines.filter(l => /^\d{1,2}:\d{2}$/.test(l) && parseInt(l.split(':')[0]) <= 23);
+}
 
-  // We expect 4 dt tokens: dep1, arr1, dep2, arr2
-  // Layout in the table: left col = deps, right col = arrs
-  // So: dts order from left-to-right, top-to-bottom reading:
-  // [dep1, dep2, arr1, arr2] — because columns are read top-down per column
-  // BUT actual tab layout:
-  //   row2: [airline2, dep1_date_time]
-  //   row3: [dep2_date_time, arr1_date_time]
-  //   row4: [arr2_date_time]
-  // So reading order: dep1, dep2, arr1, arr2
-  if(dts.length < 3) return null;
+/** استخرج رموز IATA (سطر من 3 أحرف كبيرة) بدون تكرار متتالي */
+function sharedExtractIatas(lines) {
+  return lines
+    .filter(l => /^[A-Z]{3}$/.test(l))
+    .filter((c, i, a) => i === 0 || c !== a[i-1]);
+}
 
-  const numSegs = flights.length;
-  if(numSegs === 0) return null;
+/** استخرج التاريخ من قائمة سطور */
+function sharedExtractDate(lines) {
+  return lines.find(l =>
+    /\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{4}/i.test(l) ||
+    /\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[,.\s]+\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i.test(l) ||
+    /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}\b/.test(l)
+  ) || '';
+}
 
-  const segs = [];
-  // For 2 segments:
-  if(numSegs >= 2 && dts.length >= 4){
-    const dep1 = dts[0], dep2 = dts[1], arr1 = dts[2], arr2 = dts[3];
-    const fn1m = flights[0].match(flightRe);
-    const fn2m = flights[1].match(flightRe);
-    // airports: if 3 given use middle as stopover, else infer from arr1
-    // If 3 airports: BEY/SHJ/RUH → via=SHJ. If only 2: stopover airport unknown → use '???' placeholder
-    const via = airports.length >= 3 ? airports[1] : null;
-    // For 2-airport route + 2 flights: infer stopover from airline hub
-    const airlineForHub = fn1m ? fn1m[1].toUpperCase() : (airlines[0]||'').toUpperCase();
-    const inferredHub = via || (!via && airports.length === 2 && numSegs >= 2 ? (AIRLINE_HUBS[airlineForHub]||'???') : null);
-    const unknownStop = inferredHub === '???';
-    const seg1To = inferredHub || airports[airports.length-1];
-    const seg2From = inferredHub || airports[airports.length-1];
-    segs.push({
-      _raw: raw,
-      fromCode: airports[0],
-      toCode: seg1To,
-      airlineCode: fn1m ? fn1m[1] : (airlines[0]||''),
-      flightNum: fn1m ? fn1m[2].replace(/D$/,'') : '',
-      dateRaw: `${dep1.day} ${dep1.date}`,
-      time: dep1.time,
-      arrTime: arr1.time,
-      stopover: numSegs >= 2,
-    });
-    if(numSegs>=2){
-      segs.push({
-        _raw: raw,
-        fromCode: seg2From,
-        toCode: airports[airports.length-1],
-        airlineCode: fn2m ? fn2m[1] : (airlines[1]||airlines[0]||''),
-        flightNum: fn2m ? fn2m[2].replace(/D$/,'') : '',
-        dateRaw: `${dep2.day} ${dep2.date}`,
-        time: dep2.time,
-        arrTime: arr2.time,
-        stopover: false,
-      });
-    }
-  } else if(numSegs >= 1 && dts.length >= 2){
-    const fn1m = flights[0].match(flightRe);
-    segs.push({
-      _raw: raw,
-      fromCode: airports[0],
-      toCode: airports[airports.length-1],
-      airlineCode: fn1m ? fn1m[1] : (airlines[0]||''),
-      flightNum: fn1m ? fn1m[2] : '',
-      dateRaw: `${dts[0].day} ${dts[0].date}`,
-      time: dts[0].time,
-      arrTime: dts[1].time,
-      stopover: false,
+/** استخرج الـ Terminal */
+function sharedExtractTerminal(lines) {
+  const t = lines.find(l => /^Terminal\s*\d/i.test(l));
+  return t ? t.replace(/Terminal\s*/i,'').trim() : '';
+}
+
+/** فك الدمج "DammamDMM" → "DMM"  أو "JeddahJED" → "JED" */
+function sharedUnfuseIata(token) {
+  const m = token.match(/^[A-Za-z]{2,}([A-Z]{3})$/);
+  return (m && /^[A-Z]{3}$/.test(m[1])) ? m[1] : null;
+}
+
+/** حوّل وقت التوقف (ساعات + دقائق) إلى نصوص عربي/إنجليزي */
+function sharedLayoverStr(h, m) {
+  if (!h && !m) return { en:'', ar:'' };
+  const hAr = h===1?'ساعة':h===2?'ساعتان':(h>=3&&h<=10)?`${h} ساعات`:`${h} ساعة`;
+  const en = h>0&&m>0?`${h}h ${m}m`:h>0?`${h}h`:`${m}m`;
+  const ar = h>0&&m>0?`${hAr} ${m} دقيقة`:h>0?hAr:`${m} دقيقة`;
+  return { en, ar };
+}
+
+/** القالب الفارغ لـ RawSeg */
+function emptyRawSeg() {
+  return { fromCode:'', toCode:'', airlineCode:'', flightNum:'',
+    dateRaw:'', time:'', arrTime:'', terminal:'',
+    stopover:false, layoverEn:'', layoverAr:'' };
+}
+
+// ─────────────────────────────────────────────────────────────
+// 1. طيران ناس  (XY)  +  طيران أديل (F3)
+//    — نمط: سطر رقم الرحلة "XY 59" / "F3 184"
+//    — بعده: مدينة ← IATA ← وقت ← ... ← مدينة ← IATA ← وقت
+//    — مع أو بدون "Transit in X For Nh Nm"
+// ─────────────────────────────────────────────────────────────
+function parseFlynasFloadeal(raw) {
+  // ── بصمة: سطر رقم رحلة "XX NNN" + سطر IATA منفرد
+  if (!/^([A-Z][A-Z0-9])\s+(\d{2,4})$/m.test(raw)) return null;
+  if (!/^[A-Z]{3}$/m.test(raw)) return null;
+
+  const IGNORE = /^(?:fly\+?|Confirme?d?|\+\d|SAR\s|KWD\s|EGP\s|AED\s)/i;
+  const FN_RE  = /^([A-Z][A-Z0-9])\s+(\d{2,4})$/;
+
+  // هل يوجد توقف صريح؟
+  const TRANSIT_RE = /transit\s+in\s+[A-Za-z\s()]+?(?:for)?\s*(\d+)[Hh]\s*(\d*)[Mm]?/i;
+  const transitM   = raw.match(TRANSIT_RE);
+
+  let legTexts = [];
+  let sharedLayover = { en:'', ar:'' };
+
+  if (transitM) {
+    const layH = parseInt(transitM[1]||0), layM = parseInt(transitM[2]||0);
+    sharedLayover = sharedLayoverStr(layH, layM);
+    const tIdx = raw.search(TRANSIT_RE);
+    legTexts = [ raw.slice(0, tIdx), raw.slice(tIdx).replace(TRANSIT_RE,'') ];
+  } else {
+    // قسّم عند كل سطر رقم رحلة
+    const lines = raw.split('\n').map(l=>l.trim());
+    const fnPos = lines.reduce((a,l,i) => (FN_RE.test(l)?[...a,i]:a), []);
+    if (!fnPos.length) return null;
+    const prefix = fnPos[0]>0 ? lines.slice(0,fnPos[0]).join('\n')+'\n' : '';
+    fnPos.forEach((p,si) => {
+      const end = si+1<fnPos.length ? fnPos[si+1] : lines.length;
+      legTexts.push((si===0?prefix:'') + lines.slice(p,end).join('\n'));
     });
   }
-  return segs.length ? segs : null;
-}
 
-// ── Format B: Arabic structured bullets
-// "الرحلة الأولى..." / "الإقلاع من X (RUH): HH:MM مساءً" / "الوصول إلى X (SHJ): HH:MM"
-function parseFormatB(raw){
-  if(!/الرحلة\s+(الأولى|الثانية|الثالثة|1|2|3)/u.test(raw)) return null;
-  const segBoundRe = /الرحلة\s+(?:الأولى|الثانية|الثالثة|الرابعة|\d+)/gu;
-  const bounds = [...raw.matchAll(segBoundRe)];
-  if(bounds.length === 0) return null;
+  function parseLeg(text) {
+    const lines = sharedCleanLines(text, IGNORE);
+    const fnLine = lines.find(l => FN_RE.test(l));
+    const fnM    = fnLine ? fnLine.match(FN_RE) : null;
+    const times  = sharedExtractTimes(lines);
+    let iatas    = sharedExtractIatas(lines);
 
-  const blocks = bounds.map((b,i) => raw.slice(b.index, i+1<bounds.length ? bounds[i+1].index : raw.length));
-
-  const segs = blocks.map(block => {
-    // flight number: "رقم الرحلة: G9 155" or "رقم الرحلة: G9155"
-    const fnM = block.match(/(?:رقم\s+الرحلة|رقم\s+رحلة)[:\s]+([A-Z][A-Z0-9])\s*(\d{2,4})/);
-    // departure: "الإقلاع من X (RUH): 17:00" or with مساءً
-    const depM = block.match(/الإقلاع[^(]*\(([A-Z]{3})\)[:\s]+([\d:]+)\s*(مساءً|مساء|صباحاً|صباح)?/u);
-    // arrival: "الوصول إلى X (SHJ): 20:05"
-    const arrM = block.match(/الوصول[^(]*\(([A-Z]{3})\)[:\s]+([\d:]+)\s*(مساءً|مساء|صباحاً|صباح)?/u);
-    // date: "التاريخ: الأربعاء 17 يونيو 2026" or "17 Jun 2026"
-    const dateM = block.match(/التاريخ[:\s]+(.+?)[\n\r*]/u) || block.match(/\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}/i);
-    // layover: "ساعة و35 دقيقة" or "X ساعات وY دقيقة"
-    const layM = block.match(/(?:ساعتان|ساعة)\s*و?\s*(\d+)?\s*(?:دقيقة)?|(\d+)\s*ساعا?ت?\s*(?:و\s*(\d+)\s*دقيقة)?/u);
-
-    function conv24(t, ampm){
-      if(!t) return '';
-      const [h,m] = t.split(':').map(Number);
-      if(!ampm) return t;
-      if(/مساء/.test(ampm)) return h===12?t:String(h+12).padStart(2,'0')+':'+String(m).padStart(2,'0');
-      if(/صباح/.test(ampm)) return h===12?'00:'+String(m).padStart(2,'0'):t;
-      return t;
+    // فك الدمج إذا لم توجد IATA منفردة كافية
+    if (iatas.length < 2) {
+      for (const l of lines) {
+        const fi = sharedUnfuseIata(l);
+        if (fi && !iatas.includes(fi)) iatas.push(fi);
+      }
     }
 
-    return {
-      _raw: block,
-      fromCode: depM ? depM[1] : '',
-      toCode: arrM ? arrM[1] : '',
-      airlineCode: fnM ? fnM[1] : '',
-      flightNum: fnM ? fnM[2] : '',
-      dateRaw: dateM ? (Array.isArray(dateM) ? dateM[0] : dateM[1]) : '',
-      time: depM ? conv24(depM[2], depM[3]) : '',
-      arrTime: arrM ? conv24(arrM[2], arrM[3]) : '',
-    };
+    // رأس "CitytoCity" أو "City to City"
+    let fromCode = iatas[0]||'', toCode = iatas[iatas.length-1]||'';
+    if (!fromCode || !toCode) {
+      const hdr = (lines[0]||'').match(/^([A-Za-z]+?)\s*(?:to|To)\s*([A-Za-z]+)/i);
+      if (hdr) {
+        const c1 = cityNameToCode(hdr[1]), c2 = cityNameToCode(hdr[2]);
+        if (!fromCode && c1) fromCode = c1;
+        if (!toCode   && c2) toCode   = c2;
+      }
+    }
+
+    return { ...emptyRawSeg(), fromCode, toCode,
+      airlineCode: fnM?fnM[1]:'', flightNum: fnM?fnM[2]:'',
+      dateRaw: sharedExtractDate(lines),
+      time:    times[0]||'', arrTime: times[1]||'',
+      terminal: sharedExtractTerminal(lines) };
+  }
+
+  const legs = legTexts.map(parseLeg).filter(s => s.fromCode && s.time);
+  if (!legs.length) return null;
+
+  if (transitM && legs.length >= 1) {
+    legs[0].stopover  = true;
+    legs[0].layoverEn = sharedLayover.en;
+    legs[0].layoverAr = sharedLayover.ar;
+  }
+  return legs;
+}
+
+// ─────────────────────────────────────────────────────────────
+// 2. طيران الجزيرة  (J9)
+//    نمط:
+//      Kuwait               ← مدينة المغادرة (أو الوصول)
+//      flight land          ← كلمة دلالية (تُتجاهل)
+//      Damascus             ← مدينة الوصول
+//      Fri, Jul 03, 2026    ← التاريخ
+//      J9173                ← رقم الرحلة (ملتصق)
+//      09:50                ← وقت المغادرة
+//      flight               ← (تُتجاهل)
+//      12:00                ← وقت الوصول
+//      Kuwait               ← (تكرار — تُتجاهل)
+//      Damascus             ← (تكرار — تُتجاهل)
+// ─────────────────────────────────────────────────────────────
+function parseJazeera(raw) {
+  // ── بصمة: رقم رحلة J9 ملتصق "J9173" أو منفصل "J9 173"
+  if (!/\bJ9\s*\d{2,4}\b/.test(raw)) return null;
+
+  const IGNORE = /^(?:flight\s*land|flight$|confirmed?|status)/i;
+  const lines  = sharedCleanLines(raw, IGNORE);
+
+  // استخرج كل أرقام رحلات J9
+  const FN_RE = /^(J9)\s*(\d{2,4})$/;
+  const fnPositions = lines.reduce((a,l,i) => (FN_RE.test(l)?[...a,i]:a), []);
+  if (!fnPositions.length) {
+    // حاول كصيغة غير منفصلة: "J9173"
+    const inlineM = raw.match(/\b(J9)(\d{2,4})\b/);
+    if (!inlineM) return null;
+    // أعد معالجة النص مع فك الدمج
+    const fixed = raw.replace(/\b(J9)(\d{2,4})\b/g,'$1 $2');
+    return parseJazeera(fixed);
+  }
+
+  // بنِ بلوك لكل رحلة
+  const segs = fnPositions.map((fnIdx, si) => {
+    const end   = si+1 < fnPositions.length ? fnPositions[si+1] : lines.length;
+    const before = lines.slice(Math.max(0, fnIdx-6), fnIdx);   // سطور قبل رقم الرحلة
+    const after  = lines.slice(fnIdx+1, end);                   // سطور بعد رقم الرحلة
+    const fnM    = lines[fnIdx].match(FN_RE);
+
+    // التاريخ — قد يكون قبل أو بعد رقم الرحلة
+    const allBlock = [...before, ...after];
+    const dateRaw  = sharedExtractDate(allBlock);
+    const times    = sharedExtractTimes(after);   // الأوقات دائماً بعد رقم الرحلة
+
+    // المدن — سطور نصية قبل رقم الرحلة (مدينة مغادرة أولاً ثم وصول)
+    const cityLines = before.filter(l =>
+      /^[A-Za-z\s]{3,}$/.test(l) &&          // كلمات فقط
+      !/^\d/.test(l) &&                        // لا أرقام في البداية
+      !/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/i.test(l) // ليس يوم أسبوع
+    );
+
+    // حوّل اسم المدينة إلى IATA
+    let fromCode='', toCode='';
+    // أولاً: ابحث عن رموز IATA صريحة في الكل
+    const explicitIatas = sharedExtractIatas(allBlock);
+    if (explicitIatas.length >= 2) {
+      fromCode = explicitIatas[0];
+      toCode   = explicitIatas[explicitIatas.length-1];
+    } else if (explicitIatas.length === 1) {
+      fromCode = explicitIatas[0];
+    }
+    // ثانياً: من أسماء المدن
+    if (!fromCode && cityLines[0]) fromCode = cityNameToCode(cityLines[0]) || '';
+    if (!toCode   && cityLines[1]) toCode   = cityNameToCode(cityLines[1]) || '';
+    // ثالثاً: IATA عبر قاعدة بيانات
+    if (!fromCode && cityLines[0]) {
+      const key = cityLines[0].toLowerCase().trim();
+      fromCode = CITY_TO_IATA[key] || Object.entries(AIRPORTS).find(([,v])=>
+        v.en.toLowerCase()===key||v.ar===cityLines[0])?.[0] || '';
+    }
+    if (!toCode && cityLines[1]) {
+      const key = cityLines[1].toLowerCase().trim();
+      toCode = CITY_TO_IATA[key] || Object.entries(AIRPORTS).find(([,v])=>
+        v.en.toLowerCase()===key||v.ar===cityLines[1])?.[0] || '';
+    }
+
+    return { ...emptyRawSeg(), fromCode, toCode,
+      airlineCode: fnM?fnM[1]:'J9', flightNum: fnM?fnM[2]:'',
+      dateRaw, time: times[0]||'', arrTime: times[1]||'' };
   });
-  return segs.filter(s => s.fromCode || s.time);
+
+  return segs.filter(s => s.time);
 }
 
-// ── Format C: Block structured with DEP/ARR labels
-// Segments separated by blank line, each block has FROM/TO on line 1
-function parseFormatC(raw){
-  if(!/\bDEP\b/.test(raw) && !/\bARR\b/.test(raw)) return null;
-  const blocks = raw.trim().split(/\n\s*\n+/).filter(b => b.trim());
-  if(blocks.length === 0) return null;
+// ─────────────────────────────────────────────────────────────
+// 3. GDS Classic  (Sabre / Amadeus / Galileo)
+//    نمط: SV1856 Q 19JUN 5 JEDEAM HK1 2105 2245 19JUN E
+// ─────────────────────────────────────────────────────────────
+function parseGDSClassic(raw) {
+  const lineRe = /\b([A-Z]{2})\s*(\d{2,4})\s+[A-Z]\s+(\d{1,2}[A-Z]{3})\s+\d\s+([A-Z]{3})([A-Z]{3})\s+(?:HK|DK|GK|SS|TK|RQ|HL|PN)\d+\s+([0-2]\d[0-5]\d)\s+([0-2]\d[0-5]\d)/gi;
+  const matches = [...raw.matchAll(lineRe)];
+  if (!matches.length) return null;
+  return matches.map(m => ({ ...emptyRawSeg(),
+    airlineCode: m[1].toUpperCase(), flightNum: m[2],
+    dateRaw: m[3], fromCode: m[4].toUpperCase(), toCode: m[5].toUpperCase(),
+    time: m[6].slice(0,2)+':'+m[6].slice(2), arrTime: m[7].slice(0,2)+':'+m[7].slice(2)
+  }));
+}
 
-  const flightRe = /^([A-Z][A-Z0-9])[\s-]?(\d{2,4}[A-Z]?)$/;
-  const timeRe = /^\d{2}:\d{2}$/;
-  const dateRe = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b|\b\d{1,2}(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\d{2,4}\b|\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/i;
+// ─────────────────────────────────────────────────────────────
+// 4. GDS Tab-table  (BEY/RUH\tG9388D ...)
+// ─────────────────────────────────────────────────────────────
+function parseGDSTabTable(raw) {
+  const normalized = raw.replace(/[ \t]{3,}/g,'\t').replace(/\t[ \t]*/g,'\t');
+  const lines = normalized.trim().split('\n').map(l=>l.split('\t').map(s=>s.trim()));
+  if (!lines[0]||!lines[0][0]) return null;
+  const routeM = lines[0][0].match(/^([A-Z]{3})(?:\/[A-Z]{3})*\/([A-Z]{3})(?:D)?$/);
+  if (!routeM) return null;
+  const tabRows = lines.filter(r=>r.length>1);
+  if (tabRows.length<2) return null;
+  const routeParts = lines[0][0].replace(/D$/,'').split('/');
+  const airports   = routeParts;
+  const allTokens  = lines.flatMap(r=>r);
+  const flightRe   = /^([A-Z][A-Z0-9])[\s-]?(\d{2,4}[A-Z]?)$/;
+  const flights    = allTokens.filter(t=>flightRe.test(t));
+  const airlines   = allTokens.filter(t=>/^[A-Z]{2}$/.test(t)&&!['AM','PM'].includes(t));
+  const dtRe = /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+(\d{1,2})(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(\d{2,4})\s+(\d{2}:\d{2})\b/gi;
+  const dts  = [...raw.matchAll(dtRe)].map(m=>({day:m[1],date:`${m[2]}${m[3].toUpperCase()}${m[4].length===2?'20'+m[4]:m[4]}`,time:m[5]}));
+  if (dts.length<3||!flights.length) return null;
+  const segs=[];
+  if (flights.length>=2&&dts.length>=4) {
+    const [dep1,dep2,arr1,arr2]=dts;
+    const fn1m=flights[0].match(flightRe), fn2m=flights[1].match(flightRe);
+    const via=airports.length>=3?airports[1]:(AIRLINE_HUBS[(fn1m?fn1m[1]:airlines[0]||'').toUpperCase()]||'???');
+    const s1To=airports.length>=3?airports[1]:via;
+    segs.push({...emptyRawSeg(),fromCode:airports[0],toCode:s1To,airlineCode:fn1m?fn1m[1]:airlines[0]||'',flightNum:fn1m?fn1m[2].replace(/D$/,''):'',dateRaw:`${dep1.day} ${dep1.date}`,time:dep1.time,arrTime:arr1.time,stopover:true});
+    segs.push({...emptyRawSeg(),fromCode:s1To,toCode:airports[airports.length-1],airlineCode:fn2m?fn2m[1]:airlines[1]||airlines[0]||'',flightNum:fn2m?fn2m[2].replace(/D$/,''):'',dateRaw:`${dep2.day} ${dep2.date}`,time:dep2.time,arrTime:arr2.time});
+  } else if (flights.length>=1&&dts.length>=2) {
+    const fn1m=flights[0].match(flightRe);
+    segs.push({...emptyRawSeg(),fromCode:airports[0],toCode:airports[airports.length-1],airlineCode:fn1m?fn1m[1]:airlines[0]||'',flightNum:fn1m?fn1m[2]:'',dateRaw:`${dts[0].day} ${dts[0].date}`,time:dts[0].time,arrTime:dts[1].time});
+  }
+  return segs.length?segs:null;
+}
 
-  const segs = blocks.map(block => {
-    const lines = block.trim().split('\n').map(l => l.trim()).filter(Boolean);
-    let fromCode='', toCode='', flightNum='', airlineCode='', dateRaw='', depTime='', arrTime='';
-    // Line 0: route "BEY/SHJ" or "BEY/SHJ/D"
-    const routeM = lines[0] && lines[0].match(/^([A-Z]{3})(?:\/[A-Z]{3})*\/([A-Z]{3})(?:D)?$/);
-    if(routeM){ fromCode=lines[0].split('/')[0]; toCode=lines[0].replace(/D$/,'').split('/').pop(); }
-    let nextDep = false, nextArr = false;
-    for(let i=1;i<lines.length;i++){
-      const l = lines[i];
-      if(l === 'DEP'){ nextDep=true; nextArr=false; continue; }
-      if(l === 'ARR'){ nextArr=true; nextDep=false; continue; }
-      if(nextDep && timeRe.test(l)){ depTime=l; nextDep=false; continue; }
-      if(nextArr && timeRe.test(l)){ arrTime=l; nextArr=false; continue; }
-      if(flightRe.test(l)){ const m=l.match(flightRe); airlineCode=m[1]; flightNum=m[2]; continue; }
-      if(/^[A-Z]{2}$/.test(l) && !airlineCode){ airlineCode=l; continue; }
-      if(dateRe.test(l)){ dateRaw=l; continue; }
-      // ignore NORMAL, BUSINESS, etc
-    }
-    return { _raw:block, fromCode, toCode, airlineCode, flightNum, dateRaw, time:depTime, arrTime };
-  }).filter(s => s.fromCode && s.time);
+// ─────────────────────────────────────────────────────────────
+// 5. Arabic structured  (الرحلة الأولى / الإقلاع من)
+// ─────────────────────────────────────────────────────────────
+function parseArabicStructured(raw) {
+  if(!/الرحلة\s+(الأولى|الثانية|الثالثة|1|2|3)/u.test(raw)) return null;
+  const bounds=[...raw.matchAll(/الرحلة\s+(?:الأولى|الثانية|الثالثة|الرابعة|\d+)/gu)];
+  if(!bounds.length) return null;
+  const blocks=bounds.map((b,i)=>raw.slice(b.index,i+1<bounds.length?bounds[i+1].index:raw.length));
+  function conv24(t,ampm){if(!t)return'';const[h,m]=t.split(':').map(Number);if(!ampm)return t;if(/مساء/.test(ampm))return h===12?t:String(h+12).padStart(2,'0')+':'+String(m).padStart(2,'0');if(/صباح/.test(ampm))return h===12?'00:'+String(m).padStart(2,'0'):t;return t;}
+  return blocks.map(block=>{
+    const fnM=block.match(/(?:رقم\s+الرحلة|رقم\s+رحلة)[:\s]+([A-Z][A-Z0-9])\s*(\d{2,4})/);
+    const depM=block.match(/الإقلاع[^(]*\(([A-Z]{3})\)[:\s]+([\d:]+)\s*(مساءً|مساء|صباحاً|صباح)?/u);
+    const arrM=block.match(/الوصول[^(]*\(([A-Z]{3})\)[:\s]+([\d:]+)\s*(مساءً|مساء|صباحاً|صباح)?/u);
+    const dateM=block.match(/التاريخ[:\s]+(.+?)[\n\r*]/u)||block.match(/\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}/i);
+    return{...emptyRawSeg(),fromCode:depM?depM[1]:'',toCode:arrM?arrM[1]:'',airlineCode:fnM?fnM[1]:'',flightNum:fnM?fnM[2]:'',dateRaw:dateM?(Array.isArray(dateM)?dateM[0]:dateM[1]):'',time:depM?conv24(depM[2],depM[3]):'',arrTime:arrM?conv24(arrM[2],arrM[3]):''};
+  }).filter(s=>s.fromCode||s.time);
+}
 
-  return segs.length ? segs : null;
+// ─────────────────────────────────────────────────────────────
+// 6. DEP/ARR block format
+// ─────────────────────────────────────────────────────────────
+function parseDEPARR(raw) {
+  if(!/\bDEP\b/.test(raw)&&!/\bARR\b/.test(raw)) return null;
+  const blocks=raw.trim().split(/\n\s*\n+/).filter(b=>b.trim());
+  if(!blocks.length) return null;
+  const flightRe=/^([A-Z][A-Z0-9])[\s-]?(\d{2,4}[A-Z]?)$/;
+  const timeRe=/^\d{2}:\d{2}$/;
+  const dateRe=/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b|\b\d{1,2}(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\d{2,4}\b|\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/i;
+  const segs=blocks.map(block=>{
+    const lines=block.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+    let fromCode='',toCode='',flightNum='',airlineCode='',dateRaw='',depTime='',arrTime='';
+    const routeM=lines[0]&&lines[0].match(/^([A-Z]{3})(?:\/[A-Z]{3})*\/([A-Z]{3})(?:D)?$/);
+    if(routeM){fromCode=lines[0].split('/')[0];toCode=lines[0].replace(/D$/,'').split('/').pop();}
+    let nextDep=false,nextArr=false;
+    for(let i=1;i<lines.length;i++){const l=lines[i];if(l==='DEP'){nextDep=true;nextArr=false;continue;}if(l==='ARR'){nextArr=true;nextDep=false;continue;}if(nextDep&&timeRe.test(l)){depTime=l;nextDep=false;continue;}if(nextArr&&timeRe.test(l)){arrTime=l;nextArr=false;continue;}if(flightRe.test(l)){const m=l.match(flightRe);airlineCode=m[1];flightNum=m[2];continue;}if(/^[A-Z]{2}$/.test(l)&&!airlineCode){airlineCode=l;continue;}if(dateRe.test(l)){dateRaw=l;continue;}}
+    return{...emptyRawSeg(),fromCode,toCode,airlineCode,flightNum,dateRaw,time:depTime,arrTime};
+  }).filter(s=>s.fromCode&&s.time);
+  return segs.length?segs:null;
+}
+
+// ══════════════════════════════════════════════════════════════
+// REGISTRY — الترتيب مهم: الأكثر تخصصاً أولاً
+// لإضافة شركة جديدة: أضف دالتها هنا فقط
+// ══════════════════════════════════════════════════════════════
+const AIRLINE_PARSERS = [
+  { name: 'GDS-Classic',       fn: parseGDSClassic      },
+  { name: 'Jazeera-Airways',   fn: parseJazeera         },
+  { name: 'Flynas-Flyadeal',   fn: parseFlynasFloadeal  },
+  { name: 'GDS-TabTable',      fn: parseGDSTabTable     },
+  { name: 'Arabic-Structured', fn: parseArabicStructured},
+  { name: 'DEP-ARR-Block',     fn: parseDEPARR          },
+];
+
+/** جرّب كل parser بالترتيب — أعد أول نتيجة ناجحة */
+function runAirlineParsers(raw) {
+  for (const { fn } of AIRLINE_PARSERS) {
+    const result = fn(raw);
+    if (result && result.length > 0) return result;
+  }
+  return null;
 }
 
 
@@ -624,7 +804,7 @@ function finalizeRawSeg(rs){
 }
 
 function smartExtract(text){
-  const rawSegs = parseFormatA(text) || parseFormatC(text) || parseFormatB(text);
+  const rawSegs = parseFormatGDS(text) || parseFlyadealFlynas(text) || parseFormatA(text) || parseFormatC(text) || parseFormatB(text);
   if(rawSegs && rawSegs.length > 0){ return rawSegs.map(rs => finalizeRawSeg(rs)); }
   const norm=normalizeText(text);let segs=[];const hRe=/\b(departure\s+(?:flight|from\b)|return\s+(?:flight|from\b)|departing\s+flight|arriving\s+flight|outbound|inbound|رحلة\s+الذهاب|رحلة\s+العودة|الذهاب|العودة)\b(?!\s+details?)/gi;const hM=[...norm.matchAll(hRe)];if(hM.length>=2){segs=hM.map((h,i)=>norm.slice(h.index,i+1<hM.length?hM[i+1].index:norm.length));}let _sl=false;if(segs.length===0){const depOnce=/^\s*(?:departure\s+(?:flight|from\b)|departing\s+flight|departure|departing|رحلة\s+الذهاب)\b/i;if(depOnce.test(norm)&&hM.length<=1){segs=[norm];_sl=true;}}if(segs.length===0&&!_sl){const slashRe=/\b([A-Z]{3})\/([A-Z]{3})\b/g;const slashMatches=[...norm.matchAll(slashRe)].filter(m=>AIRPORTS[m[1]]&&AIRPORTS[m[2]]);if(slashMatches.length>=2){let last=0;slashMatches.forEach((sm,i)=>{if(i>0){segs.push(norm.slice(last,sm.index));last=sm.index;}});segs.push(norm.slice(last));}}if(segs.length===0&&!_sl){const gdsDashes=[...norm.matchAll(/\b([A-Z]{3})\s*[-–]\s*([A-Z]{3})\b/g)].filter(m=>AIRPORTS[m[1]]&&AIRPORTS[m[2]]);if(gdsDashes.length>=2){let last=0;gdsDashes.forEach((dm,i)=>{if(i>0){segs.push(norm.slice(last,dm.index));last=dm.index;}});segs.push(norm.slice(last));}}if(segs.length===0&&!_sl){const codes=Object.keys(AIRLINES);const fnRe=new RegExp('\\b('+codes.map(c=>c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')[\\s\\-]?(\\d{2,4})\\b','gi');const fns=[...norm.matchAll(fnRe)];const uniq=fns.filter((m,i,a)=>i===0||(m[1].toUpperCase()+m[2])!==(a[i-1][1].toUpperCase()+a[i-1][2]));if(uniq.length>=2){let last=0;uniq.forEach((fm,i)=>{if(i>0){segs.push(norm.slice(last,fm.index));last=fm.index;}});segs.push(norm.slice(last));}}if(segs.length===0&&!_sl){const dateRe=/(?:\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|\b\d{2}(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\d{2,4}\b|\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[,\s]+\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)|\b\d{1,2}(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\d{2}\b)/gi;const dateAnchors=[...norm.matchAll(dateRe)].filter((m,i,a)=>i===0||m[0].toLowerCase()!==a[i-1][0].toLowerCase());if(dateAnchors.length>=2){let last=0;dateAnchors.forEach((dm,i)=>{if(i>0){segs.push(norm.slice(last,dm.index));last=dm.index;}});segs.push(norm.slice(last));}}if(segs.length===0&&!_sl){const aps=[...norm.matchAll(/\(([A-Z]{3})\)/g)].filter(m=>AIRPORTS[m[1]]);if(aps.length>=4){const sp=[];for(let i=2;i<aps.length;i+=2)sp.push(aps[i].index);if(sp.length>=1){let last=0;sp.forEach(s=>{segs.push(norm.slice(last,s));last=s;});segs.push(norm.slice(last));}}}if(segs.length===0)segs=[norm];if(segs.length===1&&!_sl){const transitRe=/(?:transit\s+in\s+[A-Za-z\s]+|layover|توقف\s+في)/i;if(transitRe.test(segs[0])){const codes=Object.keys(AIRLINES);const fnRe=new RegExp('\\b('+codes.map(c=>c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')[\\s\\-]?(\\d{2,4})\\b','gi');const fns=[...segs[0].matchAll(fnRe)];const uniq=fns.filter((m,i,a)=>i===0||(m[1].toUpperCase()+m[2])!==(a[i-1][1].toUpperCase()+a[i-1][2]));if(uniq.length>=2){const ns=[];let last=0;uniq.forEach((fm,i)=>{if(i>0){ns.push(segs[0].slice(last,fm.index));last=fm.index;}});ns.push(segs[0].slice(last));segs=ns;}}}let flights=segs.map(s=>parseSeg(s.trim())).filter(Boolean);let result=flights.length?flights:[parseSeg(norm)].filter(Boolean);result=result.filter((f,i,arr)=>{if(i===0)return true;return!arr.slice(0,i).some(prev=>f.airlineCode===prev.airlineCode&&f.flightNum===prev.flightNum&&f.fromCode===prev.fromCode&&f.toCode===prev.toCode);});if(result.length===2&&result[0].fromCode&&result[1].toCode&&result[0].fromCode===result[1].toCode&&result[0].toCode===result[1].fromCode){result[0]._tripLeg='outbound';result[1]._tripLeg='inbound';}computeLayovers(result);return result;}
 
