@@ -722,14 +722,14 @@ function parseAmadeusGdsLines(raw) {
   const lineRe = /^\s*\d+\s+([A-Z0-9]{2})\s*(\d{2,4})\s+([A-Z])\s+(\d{1,2}[A-Z]{3})\s+(\d)\s+([A-Z]{6})\s+(\w+\d*)\s+(\d{1,4}[AP]|\d{4})\s*(\d{1,4}[AP]|\d{4})\s+(\d{1,2}[A-Z]{3})\b/gm;
   const segs = []; let m;
   while ((m = lineRe.exec(raw)) !== null) {
-    const [,airline,flightNum,,depDateRaw,,routeBlock,,depTimeRaw,arrTimeRaw] = m;
+    const [,airline,flightNum,bkCls,depDateRaw,,routeBlock,,depTimeRaw,arrTimeRaw] = m;
     const fromCode=routeBlock.slice(0,3), toCode=routeBlock.slice(3,6);
     const depTime=to24h(depTimeRaw), arrTime=to24h(arrTimeRaw);
     if (!depTime||!arrTime) continue;
     const dm2 = depDateRaw.match(/^(\d{1,2})([A-Z]{3})$/);
     if (!dm2) continue;
     const day=dm2[1], mon=dm2[2].toUpperCase(), year=inferYear(mon);
-    segs.push({ fromCode, toCode, time: depTime, arrTime, dateRaw: `${parseInt(day)} ${mon} ${year}`, airlineCode: airline.toUpperCase(), flightNum, stopover:false, layoverAr:'', layoverEn:'', _tripLeg:'' });
+    segs.push({ fromCode, toCode, time: depTime, arrTime, dateRaw: `${parseInt(day)} ${mon} ${year}`, airlineCode: airline.toUpperCase(), flightNum, cls: bkCls, stopover:false, layoverAr:'', layoverEn:'', _tripLeg:'' });
   }
   return segs.length >= 1 ? segs : null;
 }
@@ -1125,7 +1125,7 @@ function finalizeRawSeg(rs) {
     airlineCode: code, flightNum: num,
     airlineAr: AIRLINES[code]?.ar||code,
     airlineEn: AIRLINES[code]?.en||code,
-    terminal:'', arrTerminal:'',
+    terminal: rs.terminal||'', arrTerminal: rs.arrTerminal||'', cls: rs.cls||'',
     stopover: rs.stopover||false,
     layoverAr: rs.layoverAr||'',
     layoverEn: rs.layoverEn||'',
@@ -1135,6 +1135,149 @@ function finalizeRawSeg(rs) {
 
 // ════════════════════════════════════════════════════════════════════════
 // SMART EXTRACT — orchestrates all parsers
+// ── PARSER: time-first multi-leg with stops (Flyadeal/flynas paste, NO "Transit in" line) ──
+// Shape per leg: TIME, IATA, [Terminal X], [duration], FLIGHT#, TIME, IATA, [Terminal X]
+// Token-scan around each flight number (not position-in-text), strictly gated:
+// returns null unless EVERY flight number has a valid dep + arr, so other formats are untouched.
+function parseTimeFirstStops(rawInput) {
+  if (!rawInput || /Transit\s+in\b/i.test(rawInput)) return null;
+  const clean = rawInput
+    .replace(/\bTerminal\s*\n\s*(\w+)/gi, 'Terminal $1')
+    .replace(/\bTerminal(\d)/gi, 'Terminal $1')
+    .replace(/(\d+)[Hh]\s*\n\s*(\d+)[Mm]/g, '$1h $2m');
+  const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
+
+  const timeRe = /^\d{1,2}:\d{2}$/, iataRe = /^[A-Z]{3}$/, fnRe = /^([A-Z][A-Z0-9])\s*(\d{2,4})$/;
+  const termRe = /^Terminal\s*([A-Z0-9]+)$/i;
+  const durRe  = /^(?:\d+\s*[Hh](?:\s*\d+\s*[Mm])?|\d+\s*[Mm])$/;
+  const dateRe = /\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i;
+
+  const tok = lines.map(l => {
+    if (timeRe.test(l)) return { t: 'time', v: l.padStart(5, '0') };
+    if (termRe.test(l)) return { t: 'term', v: l.match(termRe)[1].toUpperCase() };
+    if (durRe.test(l))  return { t: 'dur' };
+    if (fnRe.test(l))   { const m = l.match(fnRe); return { t: 'fn', code: m[1], num: m[2] }; }
+    if (iataRe.test(l)) return { t: 'iata', v: l };
+    if (l.length < 45 && dateRe.test(l)) return { t: 'date', v: l.match(dateRe)[0] };
+    return { t: 'other' };
+  });
+
+  const fnIdx = []; tok.forEach((x, i) => { if (x.t === 'fn') fnIdx.push(i); });
+  if (fnIdx.length < 2) return null;
+
+  const segs = [];
+  for (const k of fnIdx) {
+    // backward: [skip term/dur/other] IATA, TIME
+    let j = k - 1, skipped = 0, depTerm = '';
+    while (j >= 0 && ['term', 'dur', 'other'].includes(tok[j].t) && skipped < 4) {
+      if (tok[j].t === 'term' && !depTerm) depTerm = tok[j].v;
+      j--; skipped++;
+    }
+    if (j < 1 || tok[j].t !== 'iata' || tok[j - 1].t !== 'time') return null;
+    const fromCode = tok[j].v, depTime = tok[j - 1].v, depIdx = j - 1;
+    // forward: [skip dur/other] TIME, IATA, [Terminal]
+    j = k + 1; skipped = 0;
+    while (j < tok.length && ['dur', 'other'].includes(tok[j].t) && skipped < 3) { j++; skipped++; }
+    if (j + 1 >= tok.length || tok[j].t !== 'time' || tok[j + 1].t !== 'iata') return null;
+    const arrTime = tok[j].v, toCode = tok[j + 1].v;
+    const arrTerm = (tok[j + 2] && tok[j + 2].t === 'term') ? tok[j + 2].v : '';
+    if (fromCode === toCode) return null;
+    // date = last date line before this leg's departure time
+    let dateIdx = -1;
+    for (let d = depIdx - 1; d >= 0; d--) if (tok[d].t === 'date') { dateIdx = d; break; }
+    if (dateIdx < 0) { const first = tok.findIndex(x => x.t === 'date'); dateIdx = first; }
+    segs.push({
+      fromCode, toCode, airlineCode: tok[k].code, flightNum: tok[k].num,
+      dateRaw: dateIdx >= 0 ? tok[dateIdx].v : '', _dateIdx: dateIdx,
+      time: depTime, arrTime, terminal: depTerm, arrTerminal: arrTerm,
+      stopover: false, layoverEn: '', layoverAr: ''
+    });
+  }
+
+  applyStopLayovers(segs);
+  return segs;
+}
+
+
+// Date-aware layover calculator shared by the stop-aware parsers (a return trip is NOT a stopover)
+function applyStopLayovers(segs) {
+  const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dayNum = s => {
+    if (!s.dateRaw) return 0;
+    const m = s.dateRaw.match(/(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})/);
+    if (!m) return 0;
+    return Math.round(Date.UTC(+m[3], MONS.indexOf(m[2].toUpperCase()), +m[1]) / 86400000);
+  };
+  for (let i = 0; i < segs.length - 1; i++) {
+    const a = segs[i], b = segs[i + 1];
+    if (a.toCode !== b.fromCode) continue;
+    const d1 = dayNum(a), d2 = dayNum(b);
+    const dep1 = timeToMins(a.time), arr1 = timeToMins(a.arrTime), dep2 = timeToMins(b.time);
+    if (dep1 === null || arr1 === null || dep2 === null) continue;
+    const arrAbs = d1 * 1440 + arr1 + (arr1 < dep1 ? 1440 : 0);
+    let depAbs = d2 * 1440 + dep2;
+    if (a._dateIdx === b._dateIdx) { while (depAbs < arrAbs) depAbs += 1440; }
+    const gap = depAbs - arrAbs;
+    if (gap > 0 && gap <= 36 * 60) {
+      const lh = Math.floor(gap / 60), lm = gap % 60;
+      a.layoverEn = lh > 0 && lm > 0 ? `${lh}h ${lm}m` : lh > 0 ? `${lh}h` : `${lm}m`;
+      const hAr = lh === 1 ? 'ساعة' : lh === 2 ? 'ساعتان' : (lh >= 3 && lh <= 10) ? `${lh} ساعات` : `${lh} ساعة`;
+      a.layoverAr = lh > 0 && lm > 0 ? `${hAr} ${lm} دقيقة` : lh > 0 ? hAr : `${lm} دقيقة`;
+      a.stopover = true;
+    }
+  }
+}
+
+// ── PARSER: "CityDeparture time:HH:MM … CityArrival time:HH:MM" (Flyadeal site copy, city NAMES not IATA) ──
+function parseCityDepArrTimes(rawInput) {
+  if (!rawInput || !/Departure\s*time\s*:/i.test(rawInput) || !/Arrival\s*time\s*:/i.test(rawInput)) return null;
+  const lines = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
+  const depRe = /^(.*?)\s*Departure\s*time\s*:\s*(\d{1,2}:\d{2})$/i;
+  const arrRe = /^(.*?)\s*Arrival\s*time\s*:\s*(\d{1,2}:\d{2})$/i;
+  const fnRe  = /^([A-Z][A-Z0-9])\s*(\d{2,4})$/;
+  const dateRe = /\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}\b/i;
+  const toCode = c => {
+    const p = c.match(/\(([A-Z]{3})\)/); if (p) return p[1];
+    const w = c.trim(); if (/^[A-Z]{3}$/.test(w)) return w;
+    return cityNameToCode(w.replace(/\(.*?\)/g, '')) || '???';
+  };
+  const ev = [];
+  lines.forEach((l, i) => {
+    let m;
+    if ((m = l.match(depRe)))      ev.push({ t: 'dep', city: m[1].trim() || (lines[i - 1] || ''), time: m[2].padStart(5, '0'), i });
+    else if ((m = l.match(arrRe))) ev.push({ t: 'arr', city: m[1].trim() || (lines[i - 1] || ''), time: m[2].padStart(5, '0'), i });
+    else if ((m = l.match(fnRe)))  ev.push({ t: 'fn', code: m[1], num: m[2], i });
+    else if (l.length < 45 && (m = l.match(dateRe))) ev.push({ t: 'date', v: m[0], i });
+  });
+  const deps = ev.filter(e => e.t === 'dep');
+  if (!deps.length) return null;
+  const dates = ev.filter(e => e.t === 'date');
+  const legs = [];
+  for (let k = 0; k < deps.length; k++) {
+    const from = deps[k].i, to = k + 1 < deps.length ? deps[k + 1].i : Infinity;
+    const fn  = ev.find(e => e.t === 'fn'  && e.i > from && e.i < to);
+    const arr = ev.find(e => e.t === 'arr' && e.i > from && e.i < to);
+    if (!fn || !arr) return null;
+    legs.push({ dep: deps[k], fn, arr });
+  }
+  const segs = legs.map((lg, k) => {
+    let di = -1;
+    if (dates.length === legs.length) di = k;
+    else if (dates.length === 1) di = 0;
+    else { for (let d = 0; d < dates.length; d++) if (dates[d].i < lg.dep.i) di = d; if (di < 0 && dates.length) di = 0; }
+    return {
+      fromCode: toCode(lg.dep.city), toCode: toCode(lg.arr.city),
+      airlineCode: lg.fn.code, flightNum: lg.fn.num,
+      dateRaw: di >= 0 ? dates[di].v : '', _dateIdx: di,
+      time: lg.dep.time, arrTime: lg.arr.time, terminal: '', arrTerminal: '',
+      stopover: false, layoverEn: '', layoverAr: ''
+    };
+  });
+  applyStopLayovers(segs);
+  return segs;
+}
+
+
 // ════════════════════════════════════════════════════════════════════════
 function smartExtract(text) {
   const expanded     = expandToLines(text);
@@ -1144,6 +1287,8 @@ function smartExtract(text) {
   const rawSegs =
     parseAmadeusGdsLines(text)           ||
     parseGdsPnrTable(text)               ||
+    parseCityDepArrTimes(text)           ||
+    parseTimeFirstStops(text)            ||
     parseFlyadealFlynas(preprocessed)    ||
     parseFlyadealFlynas(expanded)        ||
     parseBookingComFormat(text)          ||
@@ -1449,7 +1594,7 @@ function detectTripType(segs) {
 //   من *المدينة (KWI)* إلى *جنيف (GVA)*
 //   وقت المغادرة: 8:30 ص *الأربعاء 01 يوليو 2026*
 //   موعد الوصول: 1:30 م
-//   [⏳ توقف في المدينة: Xساعة Ydقيقة]   ← فقط في رحلات التوقف
+//   [توقف في المدينة: Xساعة Ydقيقة]   ← فقط في رحلات التوقف
 //   *رحلة مباشرة* (اسم الشركة)           ← أو *مع توقف*
 function buildSegTextAr(seg) {
   const fromLabel = seg.fromAr && seg.fromCode ? `*${seg.fromAr} (${seg.fromCode})*` : `*${seg.fromCode||'??'}*`;
@@ -1465,7 +1610,7 @@ function buildSegTextAr(seg) {
   let layLine = '';
   if (seg.stopover && seg.layoverAr) {
     const stopCity = AIRPORTS[seg.toCode]?.ar || seg.toCode || '';
-    layLine = `\n⏳ توقف في ${stopCity}: ${seg.layoverAr}`;
+    layLine = `\nتوقف في ${stopCity}: ${seg.layoverAr}`;
   }
 
   return `من ${fromLabel} إلى ${toLabel}\nوقت المغادرة: ${dep}${datePart}\nموعد الوصول: ${arr}${layLine}\n${flightType}${airlineN ? ` (${airlineN})` : ''}`;
@@ -1476,7 +1621,7 @@ function buildSegTextAr(seg) {
 //   From *City (KWI)* to *Geneva (GVA)*
 //   Departure: 8:30 AM *Wednesday, 01 July 2026*
 //   Arrival: 1:30 PM
-//   [⏳ Layover in City: Xh Ym]
+//   [Layover in City: Xh Ym]
 //   *Direct flight* (Airline Name)
 function buildSegTextEn(seg) {
   const fromLabel = seg.fromEn && seg.fromCode ? `*${seg.fromEn} (${seg.fromCode})*` : `*${seg.fromCode||'??'}*`;
@@ -1491,7 +1636,7 @@ function buildSegTextEn(seg) {
   let layLine = '';
   if (seg.stopover && seg.layoverEn) {
     const stopCity = AIRPORTS[seg.toCode]?.en || seg.toCode || '';
-    layLine = `\n⏳ Layover in ${stopCity}: ${seg.layoverEn}`;
+    layLine = `\nLayover in ${stopCity}: ${seg.layoverEn}`;
   }
 
   return `From ${fromLabel} to ${toLabel}\nDeparture: ${dep}${datePart}\nArrival: ${arr}${layLine}\n${flightType}${airlineN ? ` (${airlineN})` : ''}`;
@@ -1504,12 +1649,12 @@ function buildArText(segs) {
   if (segs.length===1) return buildSegTextAr(segs[0]).trim();
 
   if (isRT) {
-    return `✈️ *رحلة ذهاب وعودة*\n\n*الذهاب:*\n${buildSegTextAr(segs[0]).trim()}\n\n*العودة:*\n${buildSegTextAr(segs[1]).trim()}`;
+    return `*رحلة ذهاب وعودة*\n\n*الذهاب:*\n${buildSegTextAr(segs[0]).trim()}\n\n*العودة:*\n${buildSegTextAr(segs[1]).trim()}`;
   }
 
   // Multi-leg with stopovers: each segment on its own block
   const hasStop = segs.some(s => s.stopover || s.layoverAr);
-  const header  = hasStop ? `✈️ *رحلة مع توقف — ${segs.length} مقاطع*` : `✈️ *رحلة متعددة — ${segs.length} مقاطع*`;
+  const header  = hasStop ? `*رحلة مع توقف — ${segs.length} مقاطع*` : `*رحلة متعددة — ${segs.length} مقاطع*`;
   const parts   = segs.map((s,i) => `*المقطع ${i+1}:*\n${buildSegTextAr(s).trim()}`).join('\n\n');
   return `${header}\n\n${parts}`;
 }
@@ -1521,19 +1666,32 @@ function buildEnText(segs) {
   if (segs.length===1) return buildSegTextEn(segs[0]).trim();
 
   if (isRT) {
-    return `✈️ *Round-Trip Flight*\n\n*Outbound:*\n${buildSegTextEn(segs[0]).trim()}\n\n*Return:*\n${buildSegTextEn(segs[1]).trim()}`;
+    return `*Round-Trip Flight*\n\n*Outbound:*\n${buildSegTextEn(segs[0]).trim()}\n\n*Return:*\n${buildSegTextEn(segs[1]).trim()}`;
   }
 
   const hasStop = segs.some(s => s.stopover || s.layoverEn);
-  const header  = hasStop ? `✈️ *Flight with stopover — ${segs.length} legs*` : `✈️ *Multi-city flight — ${segs.length} legs*`;
+  const header  = hasStop ? `*Flight with stopover — ${segs.length} legs*` : `*Multi-city flight — ${segs.length} legs*`;
   const parts   = segs.map((s,i) => `*Leg ${i+1}:*\n${buildSegTextEn(s).trim()}`).join('\n\n');
   return `${header}\n\n${parts}`;
 }
 function buildInternalText(segs) {
-  return segs.map((s,i)=>{
-    const dt   = `${s.day}${s.mon}`;
-    const type = isSaudi(s.fromCode)&&isSaudi(s.toCode)?'DOMESTIC':'INTL';
-    return `SEG ${i+1}: ${s.airlineCode}${s.flightNum} ${dt} ${s.fromCode}${s.toCode} ${s.time}/${s.arrTime} [${type}]${s.layoverEn?' LAYOVER:'+s.layoverEn:''}`;
+  // One Amadeus-style line per segment:  RJ 556 Q 08OCT 4*CMNAMM HK1  0530 1405  08OCT  E
+  const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return segs.map(s => {
+    const mi = MON.indexOf((s.mon || '').toUpperCase());
+    const dd = parseInt(s.day), yy = parseInt(s.year);
+    let depDate = '??', arrDate = '??', wd = '?';
+    if (mi >= 0 && dd && yy) {
+      const t0 = Date.UTC(yy, mi, dd);
+      const wdn = new Date(t0).getUTCDay();            // Amadeus: 1=Mon … 7=Sun
+      wd = String(wdn === 0 ? 7 : wdn);
+      const fmtD = ms => { const d = new Date(ms); return String(d.getUTCDate()).padStart(2, '0') + MON[d.getUTCMonth()]; };
+      depDate = fmtD(t0);
+      arrDate = fmtD((s.arrTime && s.time && s.arrTime < s.time) ? t0 + 86400000 : t0);   // overnight → next day
+    }
+    const hhmm = t => (t || '').replace(':', '').padStart(4, '0');
+    const cls = (s.cls || 'Y').toUpperCase();
+    return `${s.airlineCode} ${s.flightNum} ${cls} ${depDate} ${wd}*${s.fromCode}${s.toCode} HK1  ${hhmm(s.time)} ${hhmm(s.arrTime)}  ${arrDate}  E`;
   }).join('\n');
 }
 
@@ -1573,7 +1731,7 @@ function renderResults(segs) {
 // CLIPBOARD HELPERS
 // ════════════════════════════════════════════════════════════════════════
 function copyEl(id, btn) { const el=document.getElementById(id); navigator.clipboard.writeText(el.innerText||el.textContent||'').then(()=>{const orig=btn.innerHTML;btn.innerHTML='✅';setTimeout(()=>{btn.innerHTML=orig;},1500);}); }
-function copySegCard(btn,from,to,dep,arr,date,fn,airline) { const isAr=uiLang==='ar'; const txt=`✈️ ${from} → ${to}\n${date}\n${dep} → ${arr}\n${fn} · ${airline}`; navigator.clipboard.writeText(txt).then(()=>{const orig=btn.innerHTML;btn.innerHTML='✅';setTimeout(()=>{btn.innerHTML=orig;},1500);}); }
+function copySegCard(btn,from,to,dep,arr,date,fn,airline) { const isAr=uiLang==='ar'; const txt=`${from} → ${to}\n${date}\n${dep} → ${arr}\n${fn} · ${airline}`; navigator.clipboard.writeText(txt).then(()=>{const orig=btn.innerHTML;btn.innerHTML='✅';setTimeout(()=>{btn.innerHTML=orig;},1500);}); }
 function copyBoth(btn) { const ar=document.getElementById('arMsg'),en=document.getElementById('enMsg'); if(!ar||!en)return; navigator.clipboard.writeText((ar.innerText||'').trim()+'\n\n――――――――――――――\n\n'+(en.innerText||'').trim()).then(()=>{const orig=btn.innerHTML;btn.innerHTML='✅';setTimeout(()=>{btn.innerHTML=orig;applyLang();},1600);}); }
 function resetAll() { document.getElementById('rawSeg').value=''; document.getElementById('parseStatus').innerHTML=''; document.getElementById('extractBtn').disabled=true; document.getElementById('placeholder').style.display='block'; const r=document.getElementById('results'); r.style.display='none'; r.innerHTML=''; _lastSegs=[]; _lastParsed=[]; }
 
